@@ -1,4 +1,6 @@
 # Taxi Break Game
+![Taxi-Break-Icon](https://github.com/Mol0ko/taxi-break-game/blob/main/assets/splash.png)
+
 A fun casual 2D game written in Flutter using [Flame Engine](https://flame-engine.org). 
 You play as a taxi driver trying to pick up passengers and deliver them to their destinations while avoiding obstacles and other drivers in the city.
 
