@@ -9,31 +9,26 @@ class GameOver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const blackTextColor = Color.fromRGBO(0, 0, 0, 1.0);
-    const whiteTextColor = Color.fromRGBO(255, 255, 255, 1.0);
+    final colorScheme = Theme.of(context).colorScheme;
+    final textScheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: Center(
+    return Center(
         child: Container(
           padding: const EdgeInsets.all(10.0),
           height: 200,
           width: 300,
-          decoration: const BoxDecoration(
-            color: blackTextColor,
-            borderRadius: BorderRadius.all(
+          decoration: BoxDecoration(
+            color: colorScheme.background,
+            borderRadius: const BorderRadius.all(
               Radius.circular(20),
             ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Game Over',
-                style: TextStyle(
-                  color: whiteTextColor,
-                  fontSize: 24,
-                ),
+                style: textScheme.headlineMedium,
               ),
               const SizedBox(height: 40),
               SizedBox(
@@ -44,22 +39,15 @@ class GameOver extends StatelessWidget {
                     _game.reset();
                     _game.overlays.remove(OverlayNames.gameOver);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: whiteTextColor,
-                  ),
-                  child: const Text(
+                  child: Text(
                     'Play Again',
-                    style: TextStyle(
-                      fontSize: 28.0,
-                      color: blackTextColor,
-                    ),
+                    style: textScheme.headlineMedium,
                   ),
                 ),
               ),
             ],
           ),
         ),
-      ),
     );
   }
 }
