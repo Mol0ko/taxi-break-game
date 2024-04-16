@@ -2,6 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_break_game/overlays/overlays.dart';
 import 'package:taxi_break_game/taxi_break_game.dart';
+import 'package:taxi_break_game/taxi_break_world.dart';
 
 void main() {
   runApp(const App());
@@ -19,7 +20,7 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       home: GameWidget<TaxiBreakGame>.controlled(
-        gameFactory: TaxiBreakGame.new,
+        gameFactory: () => TaxiBreakGame(world: TaxiBreakWorld()),
         overlayBuilderMap: {
           OverlayNames.mainMenu: (_, game) => MainMenu(game: game),
           OverlayNames.gameOver: (_, game) => GameOver(game: game),

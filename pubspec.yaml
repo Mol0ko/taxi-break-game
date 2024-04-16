@@ -25,4 +25,6 @@ flutter:
   assets:
     - assets/audio/
     - assets/images/
+    - assets/images/cars/
+    - assets/images/environment/
     - assets/tiles/
