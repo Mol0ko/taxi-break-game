@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 
 class TaxiSprite extends SpriteComponent {
-  TaxiSprite() : super(size: Vector2(43, 72));
+  TaxiSprite({required super.size});
 
   @override
   Future<void> onLoad() async {

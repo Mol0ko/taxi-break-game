@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:taxi_break_game/overlays/overlays.dart';
@@ -20,7 +21,11 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       home: GameWidget<TaxiBreakGame>.controlled(
-        gameFactory: () => TaxiBreakGame(world: TaxiBreakWorld()),
+        gameFactory: () {
+          final taxiCamera = CameraComponent();
+          final world = TaxiBreakWorld(taxiCamera: taxiCamera);
+          return TaxiBreakGame(world: world, camera: taxiCamera);
+        },
         overlayBuilderMap: {
           OverlayNames.mainMenu: (_, game) => MainMenu(game: game),
           OverlayNames.gameOver: (_, game) => GameOver(game: game),

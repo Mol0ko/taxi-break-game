@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flame: ^1.17.0
   flutter_native_splash: ^2.4.0
+  flame_forge2d: ^0.18.0
 
 dev_dependencies:
   flutter_test:

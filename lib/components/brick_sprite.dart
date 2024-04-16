@@ -1,7 +1,8 @@
 import 'package:flame/components.dart';
+import 'package:taxi_break_game/taxi_break_game.dart';
 
 class BrickSprite extends SpriteComponent {
-  static const double brickSize = 128;
+  static const double brickSize = 128 / gameZoom;
 
   BrickSprite({required Vector2 position})
       : super(
