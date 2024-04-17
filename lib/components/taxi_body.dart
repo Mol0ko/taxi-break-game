@@ -13,9 +13,23 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
   Vector2 currentDragDelta = Vector2.zero();
   bool isDragging = false;
 
-  // CONFIGURATION
-  final double _speed = 40;
-  final double _friction = 2;
+  // SETTINGS
+  final double _accelerationFactor = 50;
+  final double _frictionFactor = 1.2;
+  final double _driftFactor = 0.93;
+  final double _turnFactor = 0.05;
+  final double _minimumSpeedToTurn = 4;
+  // END SETTINGS
+
+  Vector2 get _forwardVelocity {
+    final currentForwardNormal = body.worldVector(Vector2(0.0, -1.0));
+    return currentForwardNormal * body.linearVelocity.dot(currentForwardNormal);
+  }
+
+  Vector2 get _rightVelocity {
+    final currentRightNormal = body.worldVector(Vector2(1.0, 0.0));
+    return currentRightNormal * body.linearVelocity.dot(currentRightNormal);
+  }
 
   TaxiBody({required CameraComponent camera}) : _camera = camera;
 
@@ -48,6 +62,7 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
   @override
   void update(double dt) {
     _updateDrive(dt);
+    _killOrthogonalVelocity();
     _updateTurn(dt);
     _camera.viewfinder.position = position;
   }
@@ -55,31 +70,30 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
   void _updateDrive(double dt) {
     final currentForwardNormal = body.worldVector(Vector2(0.0, -1.0));
 
-    if (!isDragging) {
+    if (isDragging) {
+      final dragDy = currentDragDelta.y;
+      if (dragDy < 0) {
+        body.applyForce(currentForwardNormal * _accelerationFactor);
+      } else if (dragDy > 0) {
+        body.applyForce(-currentForwardNormal * _accelerationFactor);
+      }
+    } else {
       body.angularVelocity = 0;
       if (body.linearVelocity.length > 0.1) {
-        body.linearVelocity -= body.linearVelocity * _friction * dt;
+        body.linearVelocity -= body.linearVelocity * _frictionFactor * dt;
       } else {
         body.linearVelocity = Vector2.zero();
       }
       return;
     }
-    body.applyForce(currentForwardNormal * _speed);
   }
 
   void _updateTurn(double dt) {
-    if (!isDragging) return;
+    if (!isDragging || _forwardVelocity.length < _minimumSpeedToTurn) return;
+    body.applyAngularImpulse(currentDragDelta.x * _turnFactor);
+  }
 
-    final dx = currentDragDelta.x;
-    const maxAbsTurnImpulse = 5;
-    final absTurnImpulse = math.min(maxAbsTurnImpulse, dx.abs()).toDouble();
-
-    if (dx > 0) {
-      body.angularVelocity += absTurnImpulse * dt;
-      // body.applyAngularImpulse(absTurnImpulse);
-    } else if (dx < 0) {
-      body.angularVelocity -= absTurnImpulse * dt;
-      // body.applyAngularImpulse(-absTurnImpulse);
-    }
+  void _killOrthogonalVelocity() {
+    body.linearVelocity = _forwardVelocity + _rightVelocity * _driftFactor;
   }
 }
