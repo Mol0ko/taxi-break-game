@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:taxi_break_game/components/brick_surface.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:taxi_break_game/components/taxi_body.dart';
+import 'package:taxi_break_game/taxi_break_game.dart';
 
 class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   final CameraComponent _taxiCamera;
@@ -18,8 +19,9 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   Future<void> onLoad() async {
     _taxiCamera.world = this;
     _taxiBody = TaxiBody(camera: _taxiCamera);
-    final bricksSurface = BrickSurface();
-    await addAll([bricksSurface, _taxiBody]);
+    final cityComponent = await TiledComponent.load('city_1_level.tmx', Vector2.all(16));
+    cityComponent.scale = Vector2.all(2 / gameZoom);
+    await addAll([cityComponent, _taxiBody]);
   }
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -35,6 +33,7 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
 
   @override
   Future<void> onLoad() async {
+    paint.color = const Color.fromARGB(0, 0, 0, 0);
     final taxiSprite = TaxiSprite(size: size.toVector2());
     await add(taxiSprite);
     await super.onLoad();

@@ -5,7 +5,7 @@ class TaxiSprite extends SpriteComponent {
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('cars/Car_Lancia_Delta_Integrale_Yellow_86x145.png');
+    sprite = await Sprite.load('cars/taxi-1.png');
     anchor = Anchor.center;
   }
 }
