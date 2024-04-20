@@ -1,0 +1,42 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "city_1_level.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "city_1.tsx": {
+            "scaleInDock": 0.591,
+            "scaleInEditor": 5.19
+        },
+        "city_1_level.tmx": {
+            "scale": 0.599,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 489.983305509182,
+                "y": 361.4357262103506
+            }
+        }
+    },
+    "last.imagePath": "/Users/nikitakrasavin/Downloads/CP_V1.1.0_nyknck/CP_V1.0.4_nyknck",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "city_1_level.tmx",
+        "city_1.tsx"
+    ],
+    "project": "taxi_break.tiled-project",
+    "recentFiles": [
+        "city_1.tsx",
+        "city_1_level.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.transparentColor": "#827c82",
+    "tileset.useTransparentColor": true
+}

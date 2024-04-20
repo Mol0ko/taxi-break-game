@@ -1,3 +1,4 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -15,7 +16,7 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
   final double _accelerationFactor = 50;
   final double _frictionFactor = 1.2;
   final double _driftFactor = 0.93;
-  final double _turnFactor = 0.05;
+  final double _turnFactor = 0.12;
   final double _minimumSpeedToTurn = 4;
   // END SETTINGS
 
@@ -33,15 +34,23 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
 
   @override
   Future<void> onLoad() async {
-    paint.color = const Color.fromARGB(0, 0, 0, 0);
+    paint.color = const Color.fromARGB(0, 203, 17, 17);
     final taxiSprite = TaxiSprite(size: size.toVector2());
+    final rectHitbox = RectangleHitbox.relative(
+      Vector2.all(1),
+      parentSize: taxiSprite.size,
+      anchor: Anchor.center,
+      isSolid: true,
+    );
+    await taxiSprite.add(rectHitbox);
     await add(taxiSprite);
     await super.onLoad();
   }
 
   @override
   Body createBody() {
-    final startPosition = Vector2(0, 30);
+    // TODO: add actual start position of player
+    final startPosition = Vector2(102, 65);
     final def = BodyDef(position: startPosition, type: BodyType.dynamic);
     final body = world.createBody(def)
       ..userData = this
@@ -51,7 +60,7 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
     final shape = PolygonShape()..setAsBoxXY(size.width / 2, size.height / 2);
     final fixtureDef = FixtureDef(shape)
       ..density = 0.2
-      ..restitution = 2.0;
+      ..restitution = 0.5;
 
     body.createFixture(fixtureDef);
 
