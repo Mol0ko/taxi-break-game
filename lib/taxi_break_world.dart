@@ -27,29 +27,15 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
     const cityScale = 2.0 / gameZoom;
 
     final cityComponent = await TiledComponent.load('city_1_level.tmx', Vector2.all(tileSize));
-    final List<Component> hitBoxes = [];
-    if (cityComponent.tileMap.getLayer<TileLayer>('Buildings') case TileLayer buildingsLayer) {
-      final tileData = buildingsLayer.tileData ?? [];
-
-      for (var r = 0; r < tileData.length; r++) {
-        for (var c = 0; c < tileData[r].length; c++) {
-          final tileGid = tileData[r][c];
-          if (tileGid.tile != 0) {
-            final blockBody = WallBody(
-              startPosition:
-                  Vector2(((c + 0.5) * tileSize) * cityScale, (r + 0.5) * tileSize * cityScale),
-              size: const Size(tileSize * cityScale, tileSize * cityScale),
-            );
-            hitBoxes.add(blockBody);
-          }
-        }
-      }
-    }
+    final List<Component> walls = await _createCityWalls(
+      tiledCity: cityComponent,
+      scale: cityScale,
+    );
     cityComponent
       ..scale = Vector2.all(cityScale)
       ..position = Vector2.zero();
 
-    await addAll([cityComponent, ...hitBoxes, _taxiBody]);
+    await addAll([cityComponent, ...walls, _taxiBody]);
   }
 
   @override
@@ -77,5 +63,37 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
     _taxiBody.isDragging = false;
     log('DRAG END');
     super.onDragEnd(event);
+  }
+
+  Future<List<Component>> _createCityWalls({
+    required TiledComponent tiledCity,
+    required double scale,
+  }) async {
+    final List<Component> hitBoxes = [];
+    final tileMap = tiledCity.tileMap;
+
+    List<List<Gid>> getTileData({required String layerName}) =>
+        tileMap.getLayer<TileLayer>(layerName)?.tileData ?? [];
+
+    final buildings = getTileData(layerName: 'Buildings');
+    final decor = getTileData(layerName: 'Decor');
+    final decor2 = getTileData(layerName: 'Decor-2');
+    final otherCars = getTileData(layerName: 'OtherCars');
+
+    for (var r = 0; r < buildings.length; r++) {
+      for (var c = 0; c < buildings[r].length; c++) {
+        if (buildings[r][c].tile != 0 ||
+            decor[r][c].tile != 0 ||
+            decor2[r][c].tile != 0 ||
+            otherCars[r][c].tile != 0) {
+          final blockBody = WallBody(
+            startPosition: Vector2(((c + 0.5) * tileSize) * scale, (r + 0.5) * tileSize * scale),
+            size: Size(tileSize * scale, tileSize * scale),
+          );
+          hitBoxes.add(blockBody);
+        }
+      }
+    }
+    return hitBoxes;
   }
 }
