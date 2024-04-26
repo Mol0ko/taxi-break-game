@@ -44,9 +44,9 @@ class MainMenu extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                '''Use WASD or Arrow Keys for movement.
-Space bar to jump.
-Collect as many stars as you can and avoid enemies!''',
+                '''Use touchscreen for movement.
+
+Pick up passengers and get them to their destination in time!''',
                 textAlign: TextAlign.center,
                 style: textScheme.bodySmall,
               ),

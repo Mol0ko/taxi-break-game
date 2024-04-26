@@ -28,5 +28,6 @@ flutter:
     - assets/audio/
     - assets/images/
     - assets/images/cars/
+    - assets/images/people/
     - assets/images/environment/
     - assets/tiles/

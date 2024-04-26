@@ -2,7 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:taxi_break_game/components/taxi_sprite.dart';
+import 'package:taxi_break_game/components/taxi/taxi_sprite.dart';
 import 'package:taxi_break_game/taxi_break_game.dart';
 
 class TaxiBody extends BodyComponent<TaxiBreakGame> {
@@ -50,7 +50,7 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
   @override
   Body createBody() {
     // TODO: add actual start position of player
-    final startPosition = Vector2(102, 65);
+    final startPosition = Vector2(99, 137);
     final def = BodyDef(position: startPosition, type: BodyType.dynamic);
     final body = world.createBody(def)
       ..userData = this

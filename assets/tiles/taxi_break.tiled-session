@@ -9,15 +9,15 @@
     ],
     "fileStates": {
         "city_1.tsx": {
-            "scaleInDock": 0.591,
+            "scaleInDock": 0.4383,
             "scaleInEditor": 5.19
         },
         "city_1_level.tmx": {
-            "scale": 0.599,
-            "selectedLayer": 5,
+            "scale": 1.5847,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 489.983305509182,
-                "y": 361.4357262103506
+                "x": 613.6808228686817,
+                "y": 318.3567867735218
             }
         }
     },
