@@ -6,7 +6,7 @@ import 'package:flame/events.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:taxi_break_game/components/environment/wall_body.dart';
-import 'package:taxi_break_game/components/people/man_1_sprite.dart';
+import 'package:taxi_break_game/components/passengers/passenger.dart';
 import 'package:taxi_break_game/components/taxi/taxi_body.dart';
 import 'package:taxi_break_game/taxi_break_game.dart';
 
@@ -24,8 +24,8 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   Future<void> onLoad() async {
     _taxiCamera.world = this;
     _taxiBody = TaxiBody(camera: _taxiCamera);
-    // TODO: move man creation from here to controller
-    final man1 = Man1Sprite(size: Vector2.all(14) / gameZoom);
+    // TODO: move passanger creation from here to controller
+    final passenger1 = PassengerBody();
 
     const cityScale = 2.0 / gameZoom;
 
@@ -38,7 +38,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
       ..scale = Vector2.all(cityScale)
       ..position = Vector2.zero();
 
-    await addAll([cityComponent, ...walls, man1, _taxiBody]);
+    await addAll([cityComponent, ...walls, passenger1, _taxiBody]);
   }
 
   @override
