@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
 import 'package:taxi_break_game/components/taxi/taxi_sprite.dart';
 import 'package:taxi_break_game/taxi_break_game.dart';
 
@@ -36,6 +39,15 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
     paint.color = const Color.fromARGB(0, 203, 17, 17);
     final taxiSprite = TaxiSprite(size: size.toVector2());
     await add(taxiSprite);
+
+    final pickUpAreaPaint = Paint()..color = const Color.fromARGB(59, 203, 45, 17);
+    final pickUpArea = CircleComponent(
+      radius: PassengerLocator.pickUpRadius,
+      paint: pickUpAreaPaint,
+      anchor: Anchor.center,
+    );
+    await add(pickUpArea);
+
     await super.onLoad();
   }
 

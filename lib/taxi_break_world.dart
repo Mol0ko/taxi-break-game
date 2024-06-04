@@ -5,7 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:taxi_break_game/components/environment/wall_body.dart';
-import 'package:taxi_break_game/components/passengers/passenger.dart';
+import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
 import 'package:taxi_break_game/components/taxi/taxi_body.dart';
 import 'package:taxi_break_game/taxi_break_game.dart';
 
@@ -14,6 +14,7 @@ const tileSize = 16.0;
 class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   final CameraComponent _taxiCamera;
   late final TaxiBody _taxiBody;
+  late final PassengerLocator _passengerLocator;
 
   Vector2? _dragStartPosition;
 
@@ -23,11 +24,8 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   Future<void> onLoad() async {
     _taxiCamera.world = this;
     _taxiBody = TaxiBody(camera: _taxiCamera);
-    // TODO: move passanger creation from here to controller
-    final passenger1 = PassengerBody();
-
+    _passengerLocator = PassengerLocator(taxi: _taxiBody);
     const cityScale = 2.0 / gameZoom;
-
     final cityComponent = await TiledComponent.load('city_1_level.tmx', Vector2.all(tileSize));
     final List<Component> walls = await _createCityWalls(
       tiledCity: cityComponent,
@@ -37,7 +35,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
       ..scale = Vector2.all(cityScale)
       ..position = Vector2.zero();
 
-    await addAll([cityComponent, ...walls, passenger1, _taxiBody]);
+    await addAll([cityComponent, ...walls, _passengerLocator, _taxiBody]);
   }
 
   @override
