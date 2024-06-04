@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -45,7 +44,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   void onDragStart(DragStartEvent event) {
     _dragStartPosition = event.canvasPosition;
     _taxiBody.isDragging = true;
-    log('DRAG START');
+    // log('DRAG START');
     super.onDragStart(event);
   }
 
@@ -55,7 +54,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
     dragDelta.clamp(Vector2(-30, -30), Vector2(30, 30));
     if (_taxiBody.currentDragDelta != dragDelta) {
       _taxiBody.currentDragDelta = dragDelta;
-      log('DELTA: ${_taxiBody.currentDragDelta}');
+      // log('DELTA: ${_taxiBody.currentDragDelta}');
     }
     super.onDragUpdate(event);
   }
@@ -64,7 +63,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   void onDragEnd(DragEndEvent event) {
     _dragStartPosition = null;
     _taxiBody.isDragging = false;
-    log('DRAG END');
+    // log('DRAG END');
     super.onDragEnd(event);
   }
 

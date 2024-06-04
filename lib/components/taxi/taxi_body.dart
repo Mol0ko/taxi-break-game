@@ -1,4 +1,3 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -36,13 +35,6 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
   Future<void> onLoad() async {
     paint.color = const Color.fromARGB(0, 203, 17, 17);
     final taxiSprite = TaxiSprite(size: size.toVector2());
-    final rectHitbox = RectangleHitbox.relative(
-      Vector2.all(1),
-      parentSize: taxiSprite.size,
-      anchor: Anchor.center,
-      isSolid: true,
-    );
-    await taxiSprite.add(rectHitbox);
     await add(taxiSprite);
     await super.onLoad();
   }

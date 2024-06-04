@@ -8,7 +8,7 @@ import 'package:taxi_break_game/taxi_break_world.dart';
 const double gameZoom = 10;
 
 class TaxiBreakGame extends Forge2DGame<TaxiBreakWorld>
-    with SingleGameInstance, HasCollisionDetection {
+    with SingleGameInstance {
   @override
   Color backgroundColor() => const Color.fromRGBO(255, 221, 123, 1);
 
