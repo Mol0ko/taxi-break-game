@@ -5,36 +5,35 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/painting.dart';
+import 'package:taxi_break_game/components/passengers/model/passenger_model.dart';
 import 'package:taxi_break_game/components/passengers/passenger_sprite.dart';
-import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
-import 'package:taxi_break_game/components/passengers/passenger_type.dart';
-import 'package:taxi_break_game/taxi_break_game.dart';
+import 'package:taxi_break_game/game_state/game_settings.dart';
 
 class PassengerBody extends BodyComponent {
   // SETTINGS
-  final _pickUpAreaRadius = PassengerLocator.startPickingUpRadius;
   static const _passengerSpriteSize = Size(16, 16);
-  final _passengerSize = _passengerSpriteSize / gameZoom;
+  final _passengerSize = _passengerSpriteSize / GameSettings.gameZoom;
   // END SETTINGS
 
-  final PassengerType type;
+  final PassengerModel model;
+
   var _state = PassengerState.idle;
   late final PassengerSprite _passengerSprite;
-  Vector2? movementTarget;
+  Vector2? _pickingUpTaxiTarget;
   Completer<void>? _movementCompleter;
 
-  PassengerBody({required this.type});
+  PassengerBody({required this.model});
 
   @override
   Future<void> onLoad() async {
     paint.color = const Color.fromARGB(0, 0, 0, 0);
     _passengerSprite = PassengerSprite(
       size: _passengerSize.toVector2(),
-      type: type,
+      type: model.type,
     );
     final pickUpAreaPaint = Paint()..color = const Color.fromARGB(60, 17, 203, 26);
     final pickUpArea = CircleComponent(
-      radius: _pickUpAreaRadius,
+      radius: GameSettings.startPickingUpRadius,
       paint: pickUpAreaPaint,
       anchor: Anchor.center,
     );
@@ -44,9 +43,7 @@ class PassengerBody extends BodyComponent {
 
   @override
   Body createBody() {
-    // TODO: add actual start position of passenger
-    final position = Vector2(130, 81);
-    final def = BodyDef(position: position, type: BodyType.dynamic);
+    final def = BodyDef(position: model.spawnPoint, type: BodyType.dynamic);
     final body = world.createBody(def)..userData = this;
     return body;
   }
@@ -61,24 +58,24 @@ class PassengerBody extends BodyComponent {
 
   Future<void> moveToTaxi({required Vector2 targetPosition}) async {
     _passengerSprite.runWalkAnimation();
-    movementTarget = targetPosition;
+    _pickingUpTaxiTarget = targetPosition;
     _movementCompleter = Completer<void>();
     _state = PassengerState.moving;
     await _movementCompleter!.future;
   }
 
   void _updateMoveToTaxi(double dt) {
-    if (movementTarget == null || _movementCompleter == null) {
+    if (_pickingUpTaxiTarget == null || _movementCompleter == null) {
       log('Movement target or completer is null');
     }
-    final distanceToTarget = movementTarget!.distanceTo(body.position);
-    if (distanceToTarget < PassengerLocator.pickUpRadius) {
+    final distanceToTarget = _pickingUpTaxiTarget!.distanceTo(body.position);
+    if (distanceToTarget < GameSettings.pickUpRadius) {
       _state = PassengerState.idle;
-      movementTarget = null;
+      _pickingUpTaxiTarget = null;
       _movementCompleter!.complete();
       _movementCompleter = null;
     } else {
-      body.linearVelocity = (movementTarget! - body.position).normalized() * dt * 80;
+      body.linearVelocity = (_pickingUpTaxiTarget! - body.position).normalized() * dt * 80;
     }
   }
 }

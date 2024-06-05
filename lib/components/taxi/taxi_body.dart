@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
 import 'package:taxi_break_game/components/taxi/taxi_sprite.dart';
+import 'package:taxi_break_game/game_state/game_settings.dart';
 import 'package:taxi_break_game/taxi_break_game.dart';
 
 class TaxiBody extends BodyComponent<TaxiBreakGame> {
   final CameraComponent _camera;
 
-  final size = const Size(43, 72) / gameZoom;
+  final size = const Size(43, 72) / GameSettings.gameZoom;
   Vector2 currentDragDelta = Vector2.zero();
   bool isDragging = false;
 
@@ -42,7 +42,7 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
 
     final pickUpAreaPaint = Paint()..color = const Color.fromARGB(59, 203, 45, 17);
     final pickUpArea = CircleComponent(
-      radius: PassengerLocator.pickUpRadius,
+      radius: GameSettings.pickUpRadius,
       paint: pickUpAreaPaint,
       anchor: Anchor.center,
     );

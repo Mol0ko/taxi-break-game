@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:taxi_break_game/components/passengers/passenger_type.dart';
+import 'package:taxi_break_game/components/passengers/model/passenger_type.dart';
 
 class PassengerSprite extends SpriteAnimationComponent with HasGameRef {
   final PassengerType type;

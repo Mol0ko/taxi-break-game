@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
+
+import 'package:taxi_break_game/game_state/taxi_state.dart';
 
 class TaxiBreakGameState {
   int _passengersDelivered = 0;
   int get passengersDelivered => _passengersDelivered;
 
-  TaxiState _state = TaxiState.noPassenger;
+  TaxiState _state = NoPassenger();
   TaxiState get state => _state;
 
   final StreamController<TaxiState> _stateStreamController = StreamController<TaxiState>();
@@ -15,36 +16,26 @@ class TaxiBreakGameState {
 
   TaxiBreakGameState() {
     _stateStreamController.add(_state);
-    stateStream.listen((event) {
-      log('Taxi state: $event');
-    });
   }
 
-  void startPickUp() {
-    _state = TaxiState.pickingUpPassenger;
+  void startPickUp({required int passengerId}) {
+    _state = PickingUpPassenger(passengerId: passengerId);
     _stateStreamController.add(_state);
   }
 
-  void startDeliver() {
-    _state = TaxiState.deliveringPassenger;
+  void startDeliver({required int passengerId}) {
+    _state = DeliveringPassenger(passengerId: passengerId);
     _stateStreamController.add(_state);
   }
 
-  void startDisembarking() {
-    _state = TaxiState.disembarkingPassenger;
+  void startDisembarking({required int passengerId}) {
+    _state = DisembarkingPassenger(passengerId: passengerId);
     _stateStreamController.add(_state);
   }
 
   void disembarkingEnded() {
-    _state = TaxiState.noPassenger;
+    _state = NoPassenger();
     _stateStreamController.add(_state);
     _passengersDelivered++;
   }
-}
-
-enum TaxiState {
-  noPassenger,
-  pickingUpPassenger,
-  deliveringPassenger,
-  disembarkingPassenger,
 }
