@@ -12,9 +12,9 @@ class TaxiStateHandler extends Component {
   final double _maxTaxiVelocityToTakePassenger = 0.2;
   // END SETTINGS
 
-  TaxiBreakGameState _gameState;
-  PassengerLocator _passengerLocator;
-  TaxiBody _taxi;
+  final TaxiBreakGameState _gameState;
+  final PassengerLocator _passengerLocator;
+  final TaxiBody _taxi;
 
   TaxiStateHandler({
     required TaxiBreakGameState gameState,
@@ -52,7 +52,11 @@ class TaxiStateHandler extends Component {
         );
         passenger.moveToTaxi(targetPosition: _taxi.position);
         _passengerLocator.setDeliveringPassenger(passenger);
-        _gameState.startDeliver(passengerId: passengerId);
+        _gameState.startDeliver(
+          passengerId: passengerId,
+          destinationPoint: passenger.model.destinationPoint,
+          maxDeliveryTime: passenger.model.maxDeliveryTime,
+        );
         break;
       case DeliveringPassenger():
         break;

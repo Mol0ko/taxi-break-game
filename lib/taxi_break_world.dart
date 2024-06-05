@@ -10,6 +10,7 @@ import 'package:taxi_break_game/components/taxi/taxi_body.dart';
 import 'package:taxi_break_game/game_state/game_settings.dart';
 import 'package:taxi_break_game/game_state/taxi_break_game_state.dart';
 import 'package:taxi_break_game/game_state/taxi_state_handler.dart';
+import 'package:taxi_break_game/overlays/hud.dart';
 
 class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   static const tileSize = 16.0;
@@ -17,6 +18,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   final CameraComponent _taxiCamera;
   late final TaxiBody _taxiBody;
   late final TaxiStateHandler _taxiStateHandler;
+  late final Hud _hud;
 
   Vector2? _dragStartPosition;
 
@@ -25,6 +27,8 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   @override
   Future<void> onLoad() async {
     _taxiCamera.world = this;
+    _hud = Hud();
+    _taxiCamera.viewport.add(_hud);
     _taxiBody = TaxiBody(camera: _taxiCamera);
     final passengerLocator = PassengerLocator();
     _taxiStateHandler = TaxiStateHandler(
