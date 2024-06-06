@@ -12,7 +12,7 @@ class PassengerLocator extends Component {
   @override
   FutureOr<void> onLoad() async {
     final spawnPoint = Vector2(130, 81);
-    final destinationPoint = Vector2(130, 400);
+    final destinationPoint = Vector2(129.7, 183);
     const maxDeliveryTime = Duration(seconds: 30);
     // TODO: populate more passengers
     final passenger1Model = PassengerModel(
