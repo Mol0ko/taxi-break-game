@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +10,11 @@ class Hud extends PositionComponent with HasGameReference {
 
   late TextComponent _scoreTextComponent;
   late TextComponent _timerTextComponent;
+  late final _deliveryTimer = Timer(
+    0,
+    onTick: _gameState.startDisembarking,
+    autoStart: false,
+  );
 
   StreamSubscription? _stateSubscription;
 
@@ -47,7 +51,7 @@ class Hud extends PositionComponent with HasGameReference {
     );
     add(_scoreTextComponent);
     _timerTextComponent = TextComponent(
-      text: '00:00:00',
+      text: '0:00',
       textRenderer: TextPaint(
         style: const TextStyle(
           fontSize: 32,
@@ -72,8 +76,11 @@ class Hud extends PositionComponent with HasGameReference {
 
   @override
   void update(double dt) {
-    if (_gameState.state case DeliveringPassenger(:final maxDeliveryTime)) {
-      _timerTextComponent.text = maxDeliveryTime.formatToTimerText();
+    _deliveryTimer.update(dt);
+    if (_deliveryTimer.isRunning()) {
+      _timerTextComponent.text = Duration(
+        seconds: (_deliveryTimer.limit - _deliveryTimer.current).floor(),
+      ).formatToTimerText();
     }
     super.update(dt);
   }
@@ -88,15 +95,18 @@ class Hud extends PositionComponent with HasGameReference {
     if (newState case DeliveringPassenger(:final maxDeliveryTime)) {
       _timerTextComponent.text = maxDeliveryTime.formatToTimerText();
       add(_timerTextComponent);
+      _deliveryTimer.stop();
+      _deliveryTimer.limit = maxDeliveryTime.inSeconds.toDouble();
+      _deliveryTimer.start();
     } else if (newState case DisembarkingPassenger()) {
-      _timerTextComponent.text = '00:00:00';
       remove(_timerTextComponent);
+      _timerTextComponent.text = '0:00';
+      _deliveryTimer.stop();
     }
   }
 }
 
 extension TimerFormat on Duration {
-  String formatToTimerText() => '$inHours'
-      ':${inMinutes.remainder(60)}'
-      ':${(inSeconds.remainder(60))}';
+  String formatToTimerText() => '${inMinutes.remainder(60)}'
+      ':${(inSeconds.remainder(60).toString().padLeft(2, '0'))}';
 }

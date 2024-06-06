@@ -38,9 +38,13 @@ class TaxiBreakGameState {
     _stateStreamController.add(_state);
   }
 
-  void startDisembarking({required int passengerId}) {
-    _state = DisembarkingPassenger(passengerId: passengerId);
-    _stateStreamController.add(_state);
+  void startDisembarking() {
+    if (_state case DeliveringPassenger(:final passengerId)) {
+      _state = DisembarkingPassenger(passengerId: passengerId);
+      _stateStreamController.add(_state);
+    } else {
+      throw StateError('Disembarking not started, previous state is not DeliveringPassenger');
+    }
   }
 
   void disembarkingEnded() {

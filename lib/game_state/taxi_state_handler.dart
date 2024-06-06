@@ -41,17 +41,16 @@ class TaxiStateHandler extends Component {
   }
 
   Future<void> _handleNewTaxiState(TaxiState taxiState) async {
-    log('New taxi state: $taxiState');
+    log('New taxi state: ${taxiState.runtimeType}');
     switch (taxiState) {
       case NoPassenger():
         break;
       case PickingUpPassenger(:final passengerId):
-        _gameState.startPickUp(passengerId: passengerId);
         final passenger = _passengerLocator.passengers.firstWhere(
           (p) => p.model.id == passengerId,
         );
-        passenger.moveToTaxi(targetPosition: _taxi.position);
-        _passengerLocator.setDeliveringPassenger(passenger);
+        await passenger.moveToTaxi(targetPosition: _taxi.position);
+        _passengerLocator.remove(passenger);
         _gameState.startDeliver(
           passengerId: passengerId,
           destinationPoint: passenger.model.destinationPoint,

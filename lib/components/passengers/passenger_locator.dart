@@ -8,7 +8,6 @@ import 'package:taxi_break_game/components/passengers/model/passenger_type.dart'
 class PassengerLocator extends Component {
   final List<PassengerBody> _passengersById = [];
   Iterable<PassengerBody> get passengers => List.unmodifiable(_passengersById);
-  PassengerBody? _deliveringPassenger;
 
   @override
   FutureOr<void> onLoad() async {
@@ -26,10 +25,5 @@ class PassengerLocator extends Component {
     _passengersById.add(passenger1);
     await add(passenger1);
     return super.onLoad();
-  }
-
-  void setDeliveringPassenger(PassengerBody passenger) {
-    _deliveringPassenger = passenger;
-    remove(passenger);
   }
 }

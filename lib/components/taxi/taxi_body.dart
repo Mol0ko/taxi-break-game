@@ -40,13 +40,15 @@ class TaxiBody extends BodyComponent<TaxiBreakGame> {
     final taxiSprite = TaxiSprite(size: size.toVector2());
     await add(taxiSprite);
 
-    final pickUpAreaPaint = Paint()..color = const Color.fromARGB(59, 203, 45, 17);
-    final pickUpArea = CircleComponent(
-      radius: GameSettings.pickUpRadius,
-      paint: pickUpAreaPaint,
-      anchor: Anchor.center,
-    );
-    await add(pickUpArea);
+    if (GameSettings.enableDebugGizmos) {
+      final pickUpAreaPaint = Paint()..color = const Color.fromARGB(59, 203, 45, 17);
+      final pickUpArea = CircleComponent(
+        radius: GameSettings.pickUpRadius,
+        paint: pickUpAreaPaint,
+        anchor: Anchor.center,
+      );
+      await add(pickUpArea);
+    }
 
     await super.onLoad();
   }
