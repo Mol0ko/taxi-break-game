@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame/text.dart';
 import 'package:flutter/widgets.dart';
 import 'package:taxi_break_game/game_state/taxi_break_game_state.dart';
 import 'package:taxi_break_game/game_state/taxi_state.dart';
@@ -15,6 +16,7 @@ class Hud extends PositionComponent with HasGameReference {
     onTick: _gameState.startDisembarking,
     autoStart: false,
   );
+  var _timerStage = TimerStages.good;
 
   StreamSubscription? _stateSubscription;
 
@@ -52,20 +54,7 @@ class Hud extends PositionComponent with HasGameReference {
     add(_scoreTextComponent);
     _timerTextComponent = TextComponent(
       text: '0:00',
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          fontSize: 32,
-          color: Color.fromARGB(255, 255, 249, 217),
-          fontWeight: FontWeight.bold,
-          shadows: [
-            Shadow(
-              offset: Offset(1.5, 1.5),
-              blurRadius: 1.0,
-              color: Color.fromARGB(255, 0, 0, 0),
-            ),
-          ],
-        ),
-      ),
+      textRenderer: TimerStages.good.getTextRenderer(),
       anchor: Anchor.topCenter,
       position: Vector2(game.size.x / 2, 64),
     );
@@ -81,6 +70,17 @@ class Hud extends PositionComponent with HasGameReference {
       _timerTextComponent.text = Duration(
         seconds: (_deliveryTimer.limit - _deliveryTimer.current).floor(),
       ).formatToTimerText();
+      final timeProgressLeft = 1.0 - _deliveryTimer.progress;
+      if (_timerStage == TimerStages.good &&
+          timeProgressLeft <= TimerStages.normal.progressThreshold &&
+          timeProgressLeft > TimerStages.bad.progressThreshold) {
+        _timerStage = TimerStages.normal;
+        _timerTextComponent.textRenderer = TimerStages.normal.getTextRenderer();
+      } else if (_timerStage == TimerStages.normal &&
+          timeProgressLeft <= TimerStages.bad.progressThreshold) {
+        _timerStage = TimerStages.bad;
+        _timerTextComponent.textRenderer = TimerStages.bad.getTextRenderer();
+      }
     }
     super.update(dt);
   }
@@ -109,4 +109,44 @@ class Hud extends PositionComponent with HasGameReference {
 extension TimerFormat on Duration {
   String formatToTimerText() => '${inMinutes.remainder(60)}'
       ':${(inSeconds.remainder(60).toString().padLeft(2, '0'))}';
+}
+
+enum TimerStages {
+  good(
+    color: Color.fromARGB(255, 27, 203, 14),
+    progressThreshold: 1.0,
+  ),
+  normal(
+    color: Color.fromARGB(255, 255, 235, 10),
+    progressThreshold: 0.3,
+  ),
+  bad(
+    color: Color.fromARGB(255, 253, 63, 15),
+    progressThreshold: 0.12,
+  );
+
+  final Color color;
+  final double progressThreshold;
+
+  TextRenderer getTextRenderer() {
+    return TextPaint(
+      style: TextStyle(
+        fontSize: 32,
+        color: color,
+        fontWeight: FontWeight.bold,
+        shadows: const [
+          Shadow(
+            offset: Offset(1.5, 1.5),
+            blurRadius: 1.0,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+        ],
+      ),
+    );
+  }
+
+  const TimerStages({
+    required this.color,
+    required this.progressThreshold,
+  });
 }
