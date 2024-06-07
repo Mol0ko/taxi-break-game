@@ -60,7 +60,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
   }
 
   Future<void> _handleNewTaxiState(TaxiState taxiState) async {
-    log('New taxi state: ${taxiState.runtimeType}');
+    log('New taxi state: ${taxiState.runtimeType}\n${taxiState.props.join('\n')}');
     switch (taxiState) {
       case NoPassenger():
         game.world.controlsDisabled = false;

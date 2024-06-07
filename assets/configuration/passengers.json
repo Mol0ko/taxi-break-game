@@ -1,0 +1,132 @@
+[
+    {
+        "id": 1,
+        "type": "man3",
+        "spawnPoint": [
+            130,
+            81
+        ],
+        "destinationPoint": [
+            129.7,
+            183
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 2,
+        "type": "man2",
+        "spawnPoint": [
+            80,
+            140
+        ],
+        "destinationPoint": [
+            180,
+            184
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 3,
+        "type": "man3",
+        "spawnPoint": [
+            185,
+            81
+        ],
+        "destinationPoint": [
+            129.7,
+            183
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 4,
+        "type": "man2",
+        "spawnPoint": [
+            222.5,
+            120
+        ],
+        "destinationPoint": [
+            180,
+            184
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 5,
+        "type": "man2",
+        "spawnPoint": [
+            168,
+            120
+        ],
+        "destinationPoint": [
+            129.7,
+            183
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 6,
+        "type": "man3",
+        "spawnPoint": [
+            144,
+            148.5
+        ],
+        "destinationPoint": [
+            180,
+            184
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 7,
+        "type": "man2",
+        "spawnPoint": [
+            87,
+            110
+        ],
+        "destinationPoint": [
+            129.7,
+            183
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 8,
+        "type": "man3",
+        "spawnPoint": [
+            149,
+            183.5
+        ],
+        "destinationPoint": [
+            129.7,
+            183
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 9,
+        "type": "man2",
+        "spawnPoint": [
+            178,
+            164
+        ],
+        "destinationPoint": [
+            180,
+            184
+        ],
+        "maxDeliveryTimeSec": 30
+    },
+    {
+        "id": 10,
+        "type": "man3",
+        "spawnPoint": [
+            70,
+            183.5
+        ],
+        "destinationPoint": [
+            129.7,
+            183
+        ],
+        "maxDeliveryTimeSec": 30
+    }
+]

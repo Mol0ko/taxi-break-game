@@ -102,6 +102,7 @@ class Hud extends PositionComponent with HasGameReference {
         case DisembarkingPassengerOnSuccessDelivery() || DisembarkingPassengerOnFailedDelivery()) {
       remove(_timerTextComponent);
       _timerTextComponent.text = '0:00';
+      _timerStage = TimerStages.good;
       _deliveryTimer.stop();
       _scoreTextComponent.text = 'Score: ${_gameState.passengersDelivered}';
     }

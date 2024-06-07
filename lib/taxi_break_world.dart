@@ -28,6 +28,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   @override
   Future<void> onLoad() async {
     _taxiCamera.world = this;
+    _taxiCamera.viewfinder.zoom = 4;
     _hud = Hud();
     _taxiCamera.viewport.add(_hud);
     _taxiBody = TaxiBody(camera: _taxiCamera);

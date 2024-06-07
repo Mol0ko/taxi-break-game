@@ -1,13 +1,23 @@
+import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 
-sealed class TaxiState {}
+sealed class TaxiState implements Equatable {
+  @override
+  bool? get stringify => true;
+}
 
-class NoPassenger extends TaxiState {}
+class NoPassenger extends TaxiState {
+  @override
+  List<Object?> get props => [];
+}
 
 class PickingUpPassenger extends TaxiState {
   final int passengerId;
 
   PickingUpPassenger({required this.passengerId});
+
+  @override
+  List<Object?> get props => [passengerId];
 }
 
 class DeliveringPassenger extends TaxiState {
@@ -20,6 +30,13 @@ class DeliveringPassenger extends TaxiState {
     required this.destinationPoint,
     required this.maxDeliveryTime,
   });
+
+  @override
+  List<Object?> get props => [
+        passengerId,
+        destinationPoint,
+        maxDeliveryTime,
+      ];
 }
 
 class DisembarkingPassengerOnFailedDelivery extends TaxiState {
@@ -30,6 +47,12 @@ class DisembarkingPassengerOnFailedDelivery extends TaxiState {
     required this.passengerId,
     required this.destinationPoint,
   });
+
+  @override
+  List<Object?> get props => [
+        passengerId,
+        destinationPoint,
+      ];
 }
 
 class DisembarkingPassengerOnSuccessDelivery extends TaxiState {
@@ -40,4 +63,10 @@ class DisembarkingPassengerOnSuccessDelivery extends TaxiState {
     required this.passengerId,
     required this.destinationPoint,
   });
+
+  @override
+  List<Object?> get props => [
+        passengerId,
+        destinationPoint,
+      ];
 }
