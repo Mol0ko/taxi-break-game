@@ -13,7 +13,7 @@ class Hud extends PositionComponent with HasGameReference {
   late TextComponent _timerTextComponent;
   late final _deliveryTimer = Timer(
     0,
-    onTick: _gameState.startDisembarking,
+    onTick: _gameState.startDisembarkingOnFailedDelivery,
     autoStart: false,
   );
   var _timerStage = TimerStages.good;
@@ -35,17 +35,17 @@ class Hud extends PositionComponent with HasGameReference {
     _scoreTextComponent = TextComponent(
       text: 'Score: ${_gameState.passengersDelivered}',
       textRenderer: TextPaint(
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 20,
-          color: Color.fromARGB(255, 255, 213, 0),
+          color: const Color.fromARGB(255, 255, 213, 0),
           fontWeight: FontWeight.bold,
-          shadows: [
-            Shadow(
-              offset: Offset(1.5, 1.5),
-              blurRadius: 1.0,
+          shadows: List.generate(
+            5,
+            (_) => const Shadow(
+              blurRadius: 20.0,
               color: Color.fromARGB(255, 0, 0, 0),
             ),
-          ],
+          ),
         ),
       ),
       anchor: Anchor.topRight,
@@ -98,10 +98,12 @@ class Hud extends PositionComponent with HasGameReference {
       _deliveryTimer.stop();
       _deliveryTimer.limit = maxDeliveryTime.inSeconds.toDouble();
       _deliveryTimer.start();
-    } else if (newState case DisembarkingPassenger()) {
+    } else if (newState
+        case DisembarkingPassengerOnSuccessDelivery() || DisembarkingPassengerOnFailedDelivery()) {
       remove(_timerTextComponent);
       _timerTextComponent.text = '0:00';
       _deliveryTimer.stop();
+      _scoreTextComponent.text = 'Score: ${_gameState.passengersDelivered}';
     }
   }
 }
@@ -113,7 +115,7 @@ extension TimerFormat on Duration {
 
 enum TimerStages {
   good(
-    color: Color.fromARGB(255, 27, 203, 14),
+    color: Color.fromARGB(255, 148, 254, 140),
     progressThreshold: 1.0,
   ),
   normal(
@@ -134,13 +136,13 @@ enum TimerStages {
         fontSize: 32,
         color: color,
         fontWeight: FontWeight.bold,
-        shadows: const [
-          Shadow(
-            offset: Offset(1.5, 1.5),
-            blurRadius: 1.0,
+        shadows: List.generate(
+          5,
+          (_) => const Shadow(
+            blurRadius: 20.0,
             color: Color.fromARGB(255, 0, 0, 0),
           ),
-        ],
+        ),
       ),
     );
   }

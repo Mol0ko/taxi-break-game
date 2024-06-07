@@ -4,8 +4,8 @@ import 'package:flame/components.dart';
 import 'package:taxi_break_game/game_state/game_settings.dart';
 
 class DestinationCircle extends CircleComponent {
-  static const Color _startAnimationColor = Color.fromARGB(110, 255, 50, 204);
-  static const Color _endAnimationColor = Color.fromARGB(109, 126, 3, 95);
+  static const Color _startAnimationColor = Color.fromARGB(167, 254, 137, 225);
+  static const Color _endAnimationColor = Color.fromARGB(19, 217, 90, 185);
   static const double _animationDuration = 0.7;
 
   double _lifeSeconds = 0.0;

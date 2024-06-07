@@ -6,8 +6,8 @@ import 'package:taxi_break_game/components/passengers/passenger.dart';
 import 'package:taxi_break_game/components/passengers/model/passenger_type.dart';
 
 class PassengerLocator extends Component {
-  final List<PassengerBody> _passengersById = [];
-  Iterable<PassengerBody> get passengers => List.unmodifiable(_passengersById);
+  final List<PassengerBody> _passengers = [];
+  Iterable<PassengerBody> get passengers => List.unmodifiable(_passengers);
 
   @override
   FutureOr<void> onLoad() async {
@@ -22,8 +22,28 @@ class PassengerLocator extends Component {
       maxDeliveryTime: maxDeliveryTime,
     );
     final passenger1 = PassengerBody(model: passenger1Model);
-    _passengersById.add(passenger1);
+    _passengers.add(passenger1);
     await add(passenger1);
     return super.onLoad();
+  }
+
+  PassengerBody getPassengerById(int id) => passengers.firstWhere((p) => p.model.id == id);
+
+  void enablePassengersPickUp() {
+    for (final passenger in passengers) {
+      passenger.enablePickUpArea();
+    }
+  }
+
+  void disablePassengersPickUp() {
+    for (final passenger in passengers) {
+      passenger.disablePickUpArea();
+    }
+  }
+
+  void deletePassenger(int passengerId) {
+    final passenger = getPassengerById(passengerId);
+    _passengers.remove(passenger);
+    remove(passenger);
   }
 }

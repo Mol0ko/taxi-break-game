@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:taxi_break_game/components/environment/destination_circle.dart';
 import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
 import 'package:taxi_break_game/components/taxi/taxi_body.dart';
@@ -20,6 +20,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
   final TaxiBody _taxi;
 
   Component? _destinationArea;
+  Joint? _taxiPassengerJoint;
 
   TaxiStateHandler({
     required TaxiBreakGameState gameState,
@@ -54,7 +55,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
   void _updateDeliveringPassenger(double dt, {required Vector2 destinationPoint}) {
     if (_taxi.position.distanceTo(destinationPoint) < GameSettings.destinationRadius &&
         _taxi.body.linearVelocity.length <= _maxTaxiVelocityToTakePassenger) {
-      _gameState.startDisembarking();
+      _gameState.startDisembarkingOnSuccessDelivery();
     }
   }
 
@@ -62,27 +63,65 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
     log('New taxi state: ${taxiState.runtimeType}');
     switch (taxiState) {
       case NoPassenger():
+        game.world.controlsDisabled = false;
+        _passengerLocator.enablePassengersPickUp();
         break;
       case PickingUpPassenger(:final passengerId):
-        final passenger = _passengerLocator.passengers.firstWhere(
-          (p) => p.model.id == passengerId,
-        );
-        await passenger.moveToTaxi(targetPosition: _taxi.position);
-        _passengerLocator.remove(passenger);
+        game.world.controlsDisabled = true;
+        _taxi.currentDragDelta = Vector2.zero();
+        final passenger = _passengerLocator.getPassengerById(passengerId);
+        await passenger.walkToPoint(_taxi.position);
+        _passengerLocator.disablePassengersPickUp();
         _gameState.startDeliver(
           passengerId: passengerId,
           destinationPoint: passenger.model.destinationPoint,
           maxDeliveryTime: passenger.model.maxDeliveryTime,
         );
         break;
-      case DeliveringPassenger(:final destinationPoint):
+      case DeliveringPassenger(
+          :final passengerId,
+          :final destinationPoint,
+        ):
+        game.world.controlsDisabled = false;
         _destinationArea = DestinationCircle(point: destinationPoint);
         game.world.add(_destinationArea!);
+        final passenger = _passengerLocator.getPassengerById(passengerId);
+        final taxiPassengerJointDef = DistanceJointDef()
+          ..initialize(
+            _taxi.body,
+            passenger.body,
+            _taxi.body.worldCenter,
+            passenger.body.worldCenter,
+          )
+          ..length = 0;
+        _taxiPassengerJoint = DistanceJoint(taxiPassengerJointDef);
+        game.world.createJoint(_taxiPassengerJoint!);
         break;
-      case DisembarkingPassenger():
+      case DisembarkingPassengerOnSuccessDelivery(
+              :final passengerId,
+              :final destinationPoint,
+            ) ||
+            DisembarkingPassengerOnFailedDelivery(
+              :final passengerId,
+              :final destinationPoint,
+            ):
+        game.world.controlsDisabled = true;
+        _taxi.currentDragDelta = Vector2.zero();
         if (_destinationArea case Component destinationArea) {
           game.world.remove(destinationArea);
         }
+        if (_taxiPassengerJoint case Joint taxiPassengerJoint) {
+          game.world.destroyJoint(taxiPassengerJoint);
+        }
+        final passenger = _passengerLocator.getPassengerById(passengerId);
+        if (taxiState is DisembarkingPassengerOnSuccessDelivery) {
+          await passenger.walkToPoint(destinationPoint);
+        } else {
+          passenger.walkToPoint(destinationPoint);
+          await Future.delayed(const Duration(seconds: 3));
+        }
+        _passengerLocator.deletePassenger(passengerId);
+        _gameState.disembarkingEnded();
         break;
     }
   }

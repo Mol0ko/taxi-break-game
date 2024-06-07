@@ -21,6 +21,7 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
   late final Hud _hud;
 
   Vector2? _dragStartPosition;
+  bool controlsDisabled = false;
 
   TaxiBreakWorld({required CameraComponent taxiCamera}) : _taxiCamera = taxiCamera;
 
@@ -58,28 +59,28 @@ class TaxiBreakWorld extends Forge2DWorld with DragCallbacks {
 
   @override
   void onDragStart(DragStartEvent event) {
+    if (controlsDisabled) return;
     _dragStartPosition = event.canvasPosition;
     _taxiBody.isDragging = true;
-    // log('DRAG START');
     super.onDragStart(event);
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
+    if (controlsDisabled || _dragStartPosition == null) return;
     final dragDelta = event.canvasEndPosition - _dragStartPosition!;
     dragDelta.clamp(Vector2(-30, -30), Vector2(30, 30));
     if (_taxiBody.currentDragDelta != dragDelta) {
       _taxiBody.currentDragDelta = dragDelta;
-      // log('DELTA: ${_taxiBody.currentDragDelta}');
     }
     super.onDragUpdate(event);
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
+    if (controlsDisabled) return;
     _dragStartPosition = null;
     _taxiBody.isDragging = false;
-    // log('DRAG END');
     super.onDragEnd(event);
   }
 

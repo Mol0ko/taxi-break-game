@@ -19,7 +19,8 @@ class PassengerBody extends BodyComponent {
 
   var _state = PassengerState.idle;
   late final PassengerSprite _passengerSprite;
-  Vector2? _pickingUpTaxiTarget;
+  late final Component _pickUpArea;
+  Vector2? _walkPointTarget;
   Completer<void>? _movementCompleter;
 
   PassengerBody({required this.model});
@@ -32,12 +33,12 @@ class PassengerBody extends BodyComponent {
       type: model.type,
     );
     final pickUpAreaPaint = Paint()..color = const Color.fromARGB(60, 17, 203, 26);
-    final pickUpArea = CircleComponent(
+    _pickUpArea = CircleComponent(
       radius: GameSettings.startPickingUpRadius,
       paint: pickUpAreaPaint,
       anchor: Anchor.center,
     );
-    await addAll([pickUpArea, _passengerSprite]);
+    await addAll([_pickUpArea, _passengerSprite]);
     await super.onLoad();
   }
 
@@ -56,26 +57,38 @@ class PassengerBody extends BodyComponent {
     super.update(dt);
   }
 
-  Future<void> moveToTaxi({required Vector2 targetPosition}) async {
+  Future<void> walkToPoint(Vector2 point) async {
     _passengerSprite.runWalkAnimation();
-    _pickingUpTaxiTarget = targetPosition;
+    _walkPointTarget = point;
     _movementCompleter = Completer<void>();
     _state = PassengerState.moving;
     await _movementCompleter!.future;
   }
 
+  void enablePickUpArea() {
+    if (!children.contains(_pickUpArea)) {
+      add(_pickUpArea);
+    }
+  }
+
+  void disablePickUpArea() {
+    if (children.contains(_pickUpArea)) {
+      remove(_pickUpArea);
+    }
+  }
+
   void _updateMoveToTaxi(double dt) {
-    if (_pickingUpTaxiTarget == null || _movementCompleter == null) {
+    if (_walkPointTarget == null || _movementCompleter == null) {
       log('Movement target or completer is null');
     }
-    final distanceToTarget = _pickingUpTaxiTarget!.distanceTo(body.position);
+    final distanceToTarget = _walkPointTarget!.distanceTo(body.position);
     if (distanceToTarget < GameSettings.pickUpRadius) {
       _state = PassengerState.idle;
-      _pickingUpTaxiTarget = null;
+      _walkPointTarget = null;
       _movementCompleter!.complete();
       _movementCompleter = null;
     } else {
-      body.linearVelocity = (_pickingUpTaxiTarget! - body.position).normalized() * dt * 80;
+      body.linearVelocity = (_walkPointTarget! - body.position).normalized() * dt * 80;
     }
   }
 }

@@ -22,8 +22,22 @@ class DeliveringPassenger extends TaxiState {
   });
 }
 
-class DisembarkingPassenger extends TaxiState {
+class DisembarkingPassengerOnFailedDelivery extends TaxiState {
   final int passengerId;
+  final Vector2 destinationPoint;
 
-  DisembarkingPassenger({required this.passengerId});
+  DisembarkingPassengerOnFailedDelivery({
+    required this.passengerId,
+    required this.destinationPoint,
+  });
+}
+
+class DisembarkingPassengerOnSuccessDelivery extends TaxiState {
+  final int passengerId;
+  final Vector2 destinationPoint;
+
+  DisembarkingPassengerOnSuccessDelivery({
+    required this.passengerId,
+    required this.destinationPoint,
+  });
 }
