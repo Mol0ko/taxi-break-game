@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:taxi_break_game/components/environment/destination_circle.dart';
 import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
 import 'package:taxi_break_game/components/taxi/delivery_arrow.dart';
@@ -59,7 +60,8 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
         _taxi.body.linearVelocity.length <= _maxTaxiVelocityToTakePassenger) {
       _gameState.startDisembarkingOnSuccessDelivery();
     }
-    _deliveryArrow.angle = _taxi.position.angleTo(destinationPoint);
+    _deliveryArrow.position = _taxi.position + Vector2(0, -5);
+    _deliveryArrow.lookAt(destinationPoint);
   }
 
   Future<void> _handleNewTaxiState(TaxiState taxiState) async {
@@ -99,8 +101,8 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
           ..length = 0;
         _taxiPassengerJoint = DistanceJoint(taxiPassengerJointDef);
         game.world.createJoint(_taxiPassengerJoint!);
-        _deliveryArrow.position = Vector2(0, -5);
-        _taxi.add(_deliveryArrow);
+        _deliveryArrow.position = _taxi.position + Vector2(0, -5);
+        game.world.add(_deliveryArrow);
         break;
       case DisembarkingPassengerOnSuccessDelivery(
               :final passengerId,
@@ -111,7 +113,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
               :final destinationPoint,
             ):
         game.world.controlsDisabled = true;
-        _taxi.remove(_deliveryArrow);
+        game.world.remove(_deliveryArrow);
         _taxi.currentDragDelta = Vector2.zero();
         if (_destinationArea case Component destinationArea) {
           game.world.remove(destinationArea);
