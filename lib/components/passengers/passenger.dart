@@ -87,6 +87,7 @@ class PassengerBody extends BodyComponent {
       _walkPointTarget = null;
       _movementCompleter!.complete();
       _movementCompleter = null;
+      body.linearVelocity = Vector2.zero();
     } else {
       body.linearVelocity = (_walkPointTarget! - body.position).normalized() * dt * 80;
     }

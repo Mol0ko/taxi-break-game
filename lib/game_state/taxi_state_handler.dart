@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:taxi_break_game/components/environment/destination_circle.dart';
 import 'package:taxi_break_game/components/passengers/passenger_locator.dart';
+import 'package:taxi_break_game/components/taxi/delivery_arrow.dart';
 import 'package:taxi_break_game/components/taxi/taxi_body.dart';
 import 'package:taxi_break_game/game_state/game_settings.dart';
 import 'package:taxi_break_game/game_state/taxi_break_game_state.dart';
@@ -18,6 +19,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
   final TaxiBreakGameState _gameState;
   final PassengerLocator _passengerLocator;
   final TaxiBody _taxi;
+  final _deliveryArrow = DeliveryArrow();
 
   Component? _destinationArea;
   Joint? _taxiPassengerJoint;
@@ -57,6 +59,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
         _taxi.body.linearVelocity.length <= _maxTaxiVelocityToTakePassenger) {
       _gameState.startDisembarkingOnSuccessDelivery();
     }
+    _deliveryArrow.angle = _taxi.position.angleTo(destinationPoint);
   }
 
   Future<void> _handleNewTaxiState(TaxiState taxiState) async {
@@ -96,6 +99,8 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
           ..length = 0;
         _taxiPassengerJoint = DistanceJoint(taxiPassengerJointDef);
         game.world.createJoint(_taxiPassengerJoint!);
+        _deliveryArrow.position = Vector2(0, -5);
+        _taxi.add(_deliveryArrow);
         break;
       case DisembarkingPassengerOnSuccessDelivery(
               :final passengerId,
@@ -106,6 +111,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
               :final destinationPoint,
             ):
         game.world.controlsDisabled = true;
+        _taxi.remove(_deliveryArrow);
         _taxi.currentDragDelta = Vector2.zero();
         if (_destinationArea case Component destinationArea) {
           game.world.remove(destinationArea);
@@ -118,7 +124,7 @@ class TaxiStateHandler extends Component with HasGameReference<TaxiBreakGame> {
           await passenger.walkToPoint(destinationPoint);
         } else {
           passenger.walkToPoint(destinationPoint);
-          await Future.delayed(const Duration(seconds: 3));
+          await Future.delayed(const Duration(seconds: 5));
         }
         _passengerLocator.deletePassenger(passengerId);
         _gameState.disembarkingEnded();
